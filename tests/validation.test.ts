@@ -34,4 +34,16 @@ describe('parseLocalRequest', () => {
     expect(() => parseLocalRequest({ path: '.', dryRun: 'true' }))
       .toThrow('Invalid local repository request.');
   });
+
+  it.each([
+    'https://github.com/team/repo',
+    'HTTPS://github.com/team/repo',
+    'https:github.com/team/repo',
+    'ssh://git@github.com/team/repo',
+    'file:///local/repo',
+    'git@github.com:team/repo.git',
+  ])('rejects URL and scp-like remote inputs', (path) => {
+    expect(() => parseLocalRequest({ path }))
+      .toThrow(new Error('Invalid local repository request.'));
+  });
 });

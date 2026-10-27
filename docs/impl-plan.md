@@ -28,7 +28,7 @@ Each description includes the task's focused acceptance check. Requirements cove
 | T-05 | Confirm the secret-safe unified-preview contract: generated-only projections, no manual context, sanitized old/new text and explicit hunk coordinates. Define sentinel non-disclosure assertions. | P0 | T-01; owner approval | FR-20, FR-25; NFR-6 | BLOCKED |
 | T-06 | Specify D-4's effective eligibility deltas and mixed README counting in architecture. Define ignore-only inclusion/exclusion and generated-only/manual README outcomes; seek approval for unresolved counting policy. | P0 | T-01; owner approval of counting policy | FR-5, FR-7, FR-13; NFR-2, NFR-5, NFR-6 | BLOCKED |
 | T-07 | Implement the single sanitizer and categorized safe diagnostics. Test every FR-25 secret pattern, unsafe/missing evidence, filenames and errors; never emit raw exceptions or real secrets. | P0 | T-01 | FR-2, FR-10, FR-17, FR-18, FR-20, FR-21, FR-24, FR-25; NFR-5, NFR-6 | COMPLETE |
-| T-08 | Parse and validate local path/--dry-run arguments. Test missing/invalid input and constant-message rejection of URLs, --branch and --out without credential echo. | P0 | T-01, T-07 | FR-1, FR-2, FR-4, FR-20, FR-21, FR-25; NFR-7 | READY |
+| T-08 | Parse and validate local path/--dry-run arguments. Test missing/invalid input and constant-message rejection of URLs, --branch and --out without credential echo. | P0 | T-01, T-07 | FR-1, FR-2, FR-4, FR-20, FR-21, FR-25; NFR-7 | COMPLETE |
 | T-09 | Resolve a safe repository root, pin HEAD and read committed paths/modes/blobs using git argument arrays. Test spaces, empty/non-git paths, dirty-source isolation, symlinks/junctions and unsafe output ancestors. | P0 | T-03, T-08 | FR-5, FR-15, FR-21, FR-24; NFR-3, NFR-7 | BLOCKED |
 | T-10 | Validate local .docsync.json and classify initial, incremental and unavailable-baseline runs. Test missing/malformed state, wrong object types, absent commits and warning/full-scan fallback without fetch. | P1 | T-09 | FR-2, FR-14, FR-15, FR-16, FR-21 | BLOCKED |
 | T-11 | Build deterministic eligible inventory from HEAD with committed nested ignores and secret/link/generated-input exclusions. Test tracked-but-ignored files, dirty ignores, sorting, counts and >500 warning without truncation. | P1 | T-04, T-06, T-09 | FR-5, FR-6, FR-7, FR-13, FR-24; NFR-1, NFR-2, NFR-5 | BLOCKED |
@@ -83,7 +83,7 @@ All other scoped requirements remain mandatory, including the complete performan
 - `npm install --ignore-scripts`: exit 0; final audit reported zero vulnerabilities after replacing vulnerable initial candidates. No forced audit fix or lifecycle scripts used.
 - `npm run typecheck`, `npm run build`, `npx vitest run`, and `npx vitest run --coverage`: exit 0; 12 tests passed; statements, branches, functions and lines all 100% on the initial validator.
 - `npx --yes --package=node@20 -- node node_modules/vitest/vitest.mjs run`: exit 0; 12 tests passed. This is a local Node-20 smoke run, not the full nine-cell compatibility matrix.
-- T-07 is now ready. T-02 through T-06 still require the explicit owner decisions listed above; no approval was inferred.
+- At T-01 closeout, T-07 became ready; its completed evidence follows. T-02 through T-06 still require the explicit owner decisions listed above; no approval was inferred.
 
 ### T-07 - Complete, 2026-10-27
 
@@ -91,4 +91,17 @@ All other scoped requirements remain mandatory, including the complete performan
 - Required private-key, URL user-info, bearer, GitHub token, AWS ID, sensitive-key assignment and environment-assignment patterns are covered with synthetic data. Sensitive/environment assignments conservatively redact the remaining candidate, preventing quoted or multiline tails from leaking. Existing manual destination content is not an input to these emitters.
 - Added deterministic/idempotent and long dotted-name regressions; no files are read or written by the security functions. This does not claim a complete arbitrary-secret audit or implement repository scanning.
 - `npx vitest run tests/security.test.ts`: exit 0, 56 tests passed. `npm run typecheck`, `npm run build`, `npx vitest run`, and `npx vitest run --coverage`: exit 0, 68 total tests passed; statements, branches, functions and lines all 100% on current source.
-- T-08 is now ready; owner-approval blockers remain unchanged.
+- At T-07 closeout, T-08 became ready; its completed evidence follows. Owner-approval blockers remain unchanged.
+
+### T-08 - Complete, 2026-10-27
+
+- Added pure `parseCliArgs` using commander and zod. It accepts one filesystem path and --dry-run, preserves paths/spaces, rejects URL/scp-style input and URL-only/unknown options, and returns a constant error without emitting commander output. The shared request schema also rejects remote forms.
+- Added happy/failure, repeated-call isolation, option separator, Windows/POSIX/UNC paths, credential-bearing remote input, and stdout/stderr non-echoing checks. The module parses arguments only; it is not an executable repository sync implementation.
+- `npx vitest run tests/cli.test.ts tests/validation.test.ts`: exit 0, 44 focused tests passed. `npm run typecheck`, `npm run build`, `npx vitest run`, and `npx vitest run --coverage`: exit 0, 100 total tests passed; all four coverage metrics 100% on current source.
+- `npx --yes --package=node@20 -- node node_modules/vitest/vitest.mjs run`: exit 0, 100 tests passed. Full cross-platform/Node compatibility, real repository scans, README writes, failure recovery, performance and sample verification are not yet implemented or claimed passed.
+
+### Remaining Blockers
+
+- T-01, T-07 and T-08 are complete; no remaining task is READY. T-02 through T-06 require explicit owner approval of failure/concurrency, encoding/byte boundaries, marker/newline, safe preview and counting contracts.
+- T-09 remains BLOCKED on T-03 even though T-08 is complete. All downstream repository/extraction/write/verification tasks retain their listed unmet dependencies. No design decision was inferred and no blocked work was skipped.
+- Requirements and samples/ remain unchanged. No remote URL input, cloning, branch option, retry behavior, Maven adapter or Go adapter was implemented. The scanner/sync CLI still requires the blocked tasks.
