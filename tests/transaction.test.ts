@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { equalBytes, readDestinations, stageOutputs } from '../src/transaction.js';
+import { commitOutputs, equalBytes, readDestinations, stageOutputs } from '../src/transaction.js';
 import { createFixture, fixtureRoots } from './fixtures.js';
 
 afterEach(async () => { vi.restoreAllMocks(); await Promise.all(fixtureRoots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
@@ -38,5 +38,42 @@ describe('transaction staging', () => {
     vi.spyOn(fs, 'writeFile').mockRejectedValueOnce(new Error('synthetic failure'));
     await expect(stageOutputs(root, original, { ...original, 'README.md': Buffer.from('new') })).rejects.toThrow('could not be staged');
     expect((await fs.readdir(root)).some((name) => name.startsWith('.docsync-stage-'))).toBe(false);
+  });
+});
+
+describe('transaction commit and recovery', () => {
+  it('installs baseline last and removes staging after success', async () => {
+    const root = await createFixture({ 'README.md': 'old' });
+    const original = await readDestinations(root);
+    const rename = vi.spyOn(fs, 'rename');
+    await commitOutputs(root, original, { 'README.md': Buffer.from('new'), 'CHANGELOG.md': Buffer.from('log'), '.docsync.json': Buffer.from('state') });
+    expect(rename.mock.calls.map((call) => String(call[1]).split(/[\\/]/).at(-1))).toEqual(['README.md', 'CHANGELOG.md', '.docsync.json']);
+    expect((await readDestinations(root))['README.md']?.toString()).toBe('new');
+    expect((await fs.readdir(root)).some((name) => name.startsWith('.docsync-stage-'))).toBe(false);
+  });
+  it.each([1, 2, 3])('restores all original bytes after a replacement failure', async (failure) => {
+    const root = await createFixture({ 'README.md': 'old', 'CHANGELOG.md': 'old log', '.docsync.json': 'old state' });
+    const original = await readDestinations(root);
+    const rename = fs.rename.bind(fs);
+    let count = 0;
+    vi.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
+      count++;
+      if (count === failure) throw new Error('synthetic replacement failure');
+      return rename(from, to);
+    });
+    await expect(commitOutputs(root, original, { 'README.md': Buffer.from('new'), 'CHANGELOG.md': Buffer.from('new log'), '.docsync.json': Buffer.from('new state') })).rejects.toThrow('could not be written');
+    expect(await readDestinations(root)).toEqual(original);
+  });
+  it('removes new outputs when a later replacement fails', async () => {
+    const root = await createFixture();
+    const original = await readDestinations(root);
+    const rename = fs.rename.bind(fs);
+    let count = 0;
+    vi.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
+      if (++count === 2) throw new Error('synthetic replacement failure');
+      return rename(from, to);
+    });
+    await expect(commitOutputs(root, original, { 'README.md': Buffer.from('new'), 'CHANGELOG.md': Buffer.from('log'), '.docsync.json': Buffer.from('state') })).rejects.toThrow('could not be written');
+    expect(await readDestinations(root)).toEqual(original);
   });
 });

@@ -56,3 +56,42 @@ export async function stageOutputs(root: string, original: Destinations, files: 
     throw new Error('Documentation could not be staged.');
   }
 }
+
+export async function commitOutputs(root: string, original: Destinations, files: Destinations): Promise<void> {
+  const staged = await stageOutputs(root, original, files);
+  const attempted: StagedOutput[] = [];
+  try {
+    const current = await readDestinations(root);
+    for (const name of OUTPUT_NAMES) {
+      if (!equalBytes(current[name], original[name])) throw new Error('Output changed during sync.');
+    }
+    for (const item of staged.items) {
+      await assertSafePath(item.target);
+      const currentBytes = await fs.readFile(item.target).catch((error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return undefined;
+        throw error;
+      });
+      if (!equalBytes(currentBytes, item.original)) throw new Error('Output changed during sync.');
+      const handle = await fs.open(item.candidate, 'r+');
+      try { await handle.sync(); } finally { await handle.close(); }
+      attempted.push(item);
+      await fs.rename(item.candidate, item.target);
+    }
+    await fs.rm(staged.directory, { recursive: true, force: true });
+  } catch {
+    let restored = true;
+    for (const item of attempted.reverse()) {
+      try {
+        await assertSafePath(item.target);
+        if (item.original === undefined) await fs.rm(item.target, { force: true });
+        else {
+          await fs.writeFile(item.target, item.original, { mode: item.mode ?? 0o600 });
+          if (item.mode !== undefined) await fs.chmod(item.target, item.mode);
+        }
+      } catch { restored = false; }
+    }
+    try { await fs.rm(staged.directory, { recursive: true, force: true }); }
+    catch { restored = false; }
+    throw new Error(restored ? 'Documentation could not be written.' : 'Recovery failed; output consistency is not guaranteed.');
+  }
+}
