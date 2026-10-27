@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-15 COMPLETE: AST/GFM manual README fallbacks and root/nested Node/Python evidence combination tested; structured Markdown text extraction uses mdast-util-to-string. Inputs will be ownership-stripped by T-18/T-23, never dirty destination text.
+
 - T-14 COMPLETE: structured Python TOML/requirements evidence, project/Poetry precedence, declared script names and pyproject-only Not Found setup tested with malformed/absent cases.
 
 - T-13 COMPLETE: Node manifest facts, approved setup and script/bin names have happy/missing/unsafe/malformed tests; no command or script body is executed or emitted.
