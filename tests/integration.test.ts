@@ -5,6 +5,9 @@ import { afterEach, expect, it } from 'vitest';
 import { runCli } from '../src/cli.js';
 import { ownedRanges } from '../src/readme.js';
 import { createFixture, fixtureRoots } from './fixtures.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
 
 afterEach(async () => { await Promise.all(fixtureRoots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 
@@ -51,4 +54,28 @@ it('returns nonzero safe diagnostics on invalid input and malformed repositories
   const before = await fs.readdir(root);
   expect(await runCli([root])).toEqual({ output: 'Invalid Node manifest.', exitCode: 1 });
   expect(await fs.readdir(root)).toEqual(before);
+});
+
+it('executes the real tsx entry point without writes during dry-run', async () => {
+  const root = await createFixture({ 'requirements.txt': 'example' });
+  const result = await promisify(execFile)(process.execPath, ['--import', 'tsx', fileURLToPath(new URL('../src/cli.ts', import.meta.url)), root, '--dry-run']);
+  expect(result.stdout).toContain('Generated-only preview');
+  expect(result.stderr).toBe('');
+  expect((await fs.readdir(root)).includes('.docsync.json')).toBe(false);
+});
+
+it('ignores dirty source and preserves outputs when current markers are malformed', async () => {
+  const root = await createFixture({ 'package.json': '{"name":"committed"}', 'README.md': '# Manual' });
+  await fs.writeFile(join(root, 'package.json'), '{"name":"dirty"}');
+  const result = await runCli([root]);
+  expect(result.exitCode).toBe(0);
+  expect(result.output).toContain('Uncommitted source changes are ignored');
+  expect((await fs.readFile(join(root, 'README.md'), 'utf8')).includes('dirty')).toBe(false);
+  const state = await fs.readFile(join(root, '.docsync.json'));
+  const log = await fs.readFile(join(root, 'CHANGELOG.md'));
+  await fs.writeFile(join(root, 'README.md'), '<!-- docsync:end purpose -->');
+  const failed = await runCli([root]);
+  expect(failed).toEqual({ exitCode: 1, output: 'Invalid README section markers.' });
+  expect(await fs.readFile(join(root, '.docsync.json'))).toEqual(state);
+  expect(await fs.readFile(join(root, 'CHANGELOG.md'))).toEqual(log);
 });

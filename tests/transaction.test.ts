@@ -76,4 +76,22 @@ describe('transaction commit and recovery', () => {
     await expect(commitOutputs(root, original, { 'README.md': Buffer.from('new'), 'CHANGELOG.md': Buffer.from('log'), '.docsync.json': Buffer.from('state') })).rejects.toThrow('could not be written');
     expect(await readDestinations(root)).toEqual(original);
   });
+  it('rolls back after a cleanup failure', async () => {
+    const root = await createFixture({ 'README.md': 'old' });
+    const original = await readDestinations(root);
+    vi.spyOn(fs, 'rm').mockRejectedValueOnce(new Error('synthetic cleanup failure'));
+    await expect(commitOutputs(root, original, { ...original, 'README.md': Buffer.from('new') })).rejects.toThrow('could not be written');
+    expect(await readDestinations(root)).toEqual(original);
+  });
+  it('reports failed recovery explicitly instead of claiming preservation', async () => {
+    const root = await createFixture({ 'README.md': 'old' });
+    const original = await readDestinations(root);
+    const write = fs.writeFile.bind(fs);
+    vi.spyOn(fs, 'rename').mockRejectedValueOnce(new Error('synthetic failure'));
+    vi.spyOn(fs, 'writeFile').mockImplementation(async (path, data, options) => {
+      if (String(path) === join(root, 'README.md')) throw new Error('synthetic recovery failure');
+      return write(path, data, options);
+    });
+    await expect(commitOutputs(root, original, { ...original, 'README.md': Buffer.from('new') })).rejects.toThrow('Recovery failed; output consistency is not guaranteed.');
+  });
 });
