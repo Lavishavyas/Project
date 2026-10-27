@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-09 COMPLETE: safe local root/HEAD discovery, byte-preserving committed blob reads and dirty-state detection; temporary-repository tests cover missing/empty paths, links, invalid objects and dirty isolation. Full-suite gate required before commit.
+
 - T-06 COMPLETE (design contract): committed-rule eligibility transitions and mixed/generated-only README counting are specified with contract checks; behavioral inventory tests follow in T-11/T-12.
 
 - T-05 COMPLETE (design contract): zero-context sanitized projections and no-write/no-manual-context requirements recorded and checked by policy tests. Runtime output assertions remain T-24 work.
