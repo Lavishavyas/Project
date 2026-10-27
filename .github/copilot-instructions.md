@@ -7,6 +7,7 @@ A TypeScript CLI that scans a git repo, generates or updates its README, tracks 
 - vitest for tests, commander for CLI, simple-git for git, zod for validation
 
 ## Rules
+- Never modify anything under samples/. It is a read-only test target.
 - Never invent facts. If information is not in the repo, write "Not Found".
 - Never output secrets. List environment variables by name only.
 - Validate all external input (paths, URLs, CLI args) with zod.

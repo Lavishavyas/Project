@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "matcher": "create|edit|str_replace_editor|apply_patch|create_file|replace_string_in_file|multi_replace_string_in_file|insert_edit_into_file",
+        "command": "npx vitest run --passWithNoTests",
+        "cwd": ".",
+        "timeoutSec": 120
+      }
+    ]
+  }
+}
