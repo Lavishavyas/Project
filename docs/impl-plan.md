@@ -110,4 +110,6 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-03 COMPLETE: strict UTF-8/BOM decoding and explicit byte-offset mapping have happy/failure tests, including malformed bytes and surrogate boundaries. Full-suite gate required before commit.
+
 - T-02 COMPLETE (design sequencing): documented staged writes, original snapshots, baseline-last and handled-failure rollback. The existing 100-test suite is the closeout gate; transaction behavior awaits T-25/T-26. FR-22 under crash/concurrency/rollback failure remains an explicit assurance gap, not an accepted waived requirement.

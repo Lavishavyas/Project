@@ -279,6 +279,7 @@ Existing manual README and changelog bytes are preserved even when sensitive; sa
 The user requested continued implementation without further questions. The following implementation choices resolve design sequencing, not unimplemented runtime gates or a relaxation of source requirements.
 
 - T-02: Compute and validate before writes; snapshot originals, stage same-filesystem candidates, revalidate originals, replace README/changelog, and install baseline last. Roll back handled failures in reverse order. Refuse write-mode access to this workspace's samples/ tree. Fault tests must verify recoverable failure preservation. Power loss, external concurrent mutation and rollback failure cannot be certified as unconditional FR-22 compliance; keep those limitations explicit and never report failed recovery as success.
+- T-03: Text is strict UTF-8, including an optional preserved BOM. Original buffers remain authoritative; parser UTF-16 offsets are explicitly mapped to UTF-8 byte boundaries and may not split surrogate pairs. Invalid README/manifest text is fatal before writes; generic undecodable files contribute paths but no inferred text evidence.
 
 These deferrals belong to this timeboxed architecture only; docs/requirements.md remains unchanged. No requirement ID is renumbered, removed, or represented as implemented by this document.
 
