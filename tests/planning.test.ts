@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { planChangelog } from '../src/planning.js';
+import { planChangelog, planState } from '../src/planning.js';
 
 describe('planChangelog', () => {
   it('appends a dated initial entry and preserves previous bytes', () => {
@@ -17,5 +17,17 @@ describe('planChangelog', () => {
   });
   it('rejects invalid time input before any writing', () => {
     expect(() => planChangelog('', [], [], true, new Date('invalid'))).toThrow('Invalid changelog date.');
+  });
+});
+
+describe('planState', () => {
+  it('deterministically plans a pinned SHA without any persistence', () => {
+    expect(JSON.parse(planState('a'.repeat(40)))).toEqual({ lastSyncedSha: 'a'.repeat(40) });
+    expect(planState('a'.repeat(40))).toBe(planState('a'.repeat(40)));
+    expect(JSON.parse(planState('b'.repeat(64))).lastSyncedSha).toHaveLength(64);
+  });
+  it('rejects invalid and absent state candidates safely', () => {
+    expect(() => planState(undefined)).toThrow('Invalid sync state.');
+    expect(() => planState('invalid')).toThrow('Invalid sync state.');
   });
 });

@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-22 COMPLETE: deterministic validated local SHA serialization tested with 40/64-character hashes and missing/invalid candidates; planning performs no persistence.
+
 - T-21 COMPLETE: pure UTC changelog appends tested with initial/no-change cases, preserved BOM/line endings, sanitized paths and invalid-date failure.
 
 - T-20 COMPLETE: pure unioned manifest/README/source/structure impact mapping tested, including full scans, missing sections and no-change cases.
