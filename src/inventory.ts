@@ -3,6 +3,7 @@ import ignore from 'ignore';
 import { readBlob, readTree } from './git.js';
 import type { Repository } from './git.js';
 import { decodeText } from './text.js';
+import { extractExampleNames } from './environment.js';
 
 export type Snapshot = Map<string, string>;
 
@@ -43,7 +44,11 @@ export async function scanRepository(repo: Repository, sha = repo.head): Promise
   for (const entry of entries.sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0)) {
     if (!eligiblePath(entry.path, rules)) continue;
     const bytes = await readBlob(repo, entry.oid);
-    try { snapshot.set(entry.path, decodeText(bytes)); }
+    try {
+      const text = decodeText(bytes);
+      snapshot.set(entry.path, posix.basename(entry.path) === '.env.example'
+        ? extractExampleNames(text).map((name) => `${name}=`).join('\n') : text);
+    }
     catch {
       if (['README.md', 'package.json', 'pyproject.toml'].includes(posix.basename(entry.path))) {
         throw new Error('Unsupported text encoding.');

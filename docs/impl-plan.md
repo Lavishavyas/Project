@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-16 COMPLETE: optional-export example assignments yield sorted names only; scanner snapshots replace example values with empty assignments immediately. Missing/invalid evidence returns no invented names.
+
 - T-15 COMPLETE: AST/GFM manual README fallbacks and root/nested Node/Python evidence combination tested; structured Markdown text extraction uses mdast-util-to-string. Inputs will be ownership-stripped by T-18/T-23, never dirty destination text.
 
 - T-14 COMPLETE: structured Python TOML/requirements evidence, project/Poetry precedence, declared script names and pyproject-only Not Found setup tested with malformed/absent cases.
