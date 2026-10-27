@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-27 COMPLETE: executable tsx CLI wires validate/pin/scan/plan/preview-or-write/report with fixed fatal diagnostics. End-to-end tests exercise dry-run non-modification, real writes, generated-only no-op, committed incremental environment updates and malformed-input preservation. Filesystem integration tests have a 20-second test timeout, separate from the NFR performance measurement.
+
 - T-26 COMPLETE (handled-failure model): baseline-last replacement, candidate flush, pre-replacement revalidation and reverse rollback tested at each replacement boundary with existing/absent outputs. Failed recovery remains an explicit nonzero diagnostic and assurance limitation, not claimed unconditional FR-22 compliance.
 
 - T-25 COMPLETE: safe destination snapshots, byte revalidation, private same-filesystem staging/backups and protected-sample refusal tested; candidate-write failure cleans staging and preserves originals.
