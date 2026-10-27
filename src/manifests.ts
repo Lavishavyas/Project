@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { parse as parseToml } from 'smol-toml';
 import { sanitizeEvidence } from './security.js';
 
 export interface ManifestEvidence {
@@ -32,5 +33,34 @@ export function extractNode(content: string): ManifestEvidence {
   return {
     stack: 'Node.js/TypeScript', name: sanitizeEvidence(manifest.name),
     purpose: sanitizeEvidence(manifest.description), setup: 'npm install', usage: [...new Set(usage)],
+  };
+}
+
+export function extractPython(content: string | undefined, hasRequirements: boolean): ManifestEvidence {
+  if (content === undefined && !hasRequirements) throw new Error('Python manifest evidence not found.');
+  let manifest: Record<string, unknown> = {};
+  if (content !== undefined) {
+    try { manifest = z.record(z.string(), z.unknown()).parse(parseToml(content.replace(/^\ufeff/, ''))); }
+    catch { throw new Error('Invalid Python manifest.'); }
+  }
+  const record = z.record(z.string(), z.unknown());
+  const project = record.safeParse(manifest.project).data ?? {};
+  const tool = record.safeParse(manifest.tool).data ?? {};
+  const poetry = record.safeParse(tool.poetry).data ?? {};
+  const usage: string[] = [];
+  for (const candidate of [project.scripts, poetry.scripts]) {
+    const scripts = z.record(z.string(), z.string()).safeParse(candidate);
+    if (scripts.success) {
+      for (const name of Object.keys(scripts.data).sort()) {
+        if (sanitizeEvidence(name) === name && !name.includes('[REDACTED]')) usage.push(name);
+      }
+    }
+  }
+  return {
+    stack: 'Python',
+    name: [project.name, poetry.name].map(sanitizeEvidence).find((value) => value !== 'Not Found') ?? 'Not Found',
+    purpose: [project.description, poetry.description].map(sanitizeEvidence).find((value) => value !== 'Not Found') ?? 'Not Found',
+    setup: hasRequirements ? 'pip install -r requirements.txt' : 'Not Found',
+    usage: [...new Set(usage)],
   };
 }
