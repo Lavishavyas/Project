@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-23 COMPLETE: full candidate output plan combines semantic HEAD/baseline evidence, impacts, current destination preservation, changelog and state without writes; initial/no-op/fallback and generated-only normalization tests added.
+
 - T-22 COMPLETE: deterministic validated local SHA serialization tested with 40/64-character hashes and missing/invalid candidates; planning performs no persistence.
 
 - T-21 COMPLETE: pure UTC changelog appends tested with initial/no-change cases, preserved BOM/line endings, sanitized paths and invalid-date failure.

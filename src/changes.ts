@@ -16,8 +16,15 @@ export function detectChanges(before: Snapshot, after: Snapshot): Change[] {
 
 export async function readChanges(repo: Repository, baseline: string, before: Snapshot, after: Snapshot): Promise<Change[]> {
   shaSchema.parse(baseline);
+  let paths: string[];
   try {
-    await repo.git.diff(['--name-only', '--no-renames', '-z', `${baseline}..${repo.head}`]);
+    paths = (await repo.git.diff(['--name-only', '--no-renames', '-z', `${baseline}..${repo.head}`])).split('\0');
   } catch { throw new Error('Cannot compare baseline commits.'); }
-  return detectChanges(before, after);
+  const changes = detectChanges(before, after);
+  for (const path of paths) {
+    if (before.has(path) && after.has(path) && !/(?:^|\/)readme\.md$/i.test(path) && !changes.some((change) => change.path === path)) {
+      changes.push({ path, kind: 'modified' });
+    }
+  }
+  return changes.sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
 }
