@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-12 COMPLETE: baseline..HEAD git diff plus effective snapshot changes tested, including ignore-only removal and rename endpoints. T-23 will supply marker-normalized snapshots to suppress generated-only README changes.
+
 - T-11 COMPLETE: committed/nested ignore inventory, stable paths and pre-read secret/generated-input exclusions tested, including forced-tracked ignored files and dirty-rule isolation. Scale warning is emitted by CLI reporting, not the pure scanner.
 
 - T-10 COMPLETE: local state schema and initial/incremental/unavailable-history classification tested; malformed state fails safely and missing commits never trigger network operations.
