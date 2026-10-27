@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-06 COMPLETE (design contract): committed-rule eligibility transitions and mixed/generated-only README counting are specified with contract checks; behavioral inventory tests follow in T-11/T-12.
+
 - T-05 COMPLETE (design contract): zero-context sanitized projections and no-write/no-manual-context requirements recorded and checked by policy tests. Runtime output assertions remain T-24 work.
 
 - T-04 COMPLETE (policy/newline helper): standalone non-code marker ownership and independent HEAD/destination validation are specified; first-newline selection has existing/missing-evidence tests. Pair parsing follows in T-18.

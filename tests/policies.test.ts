@@ -12,4 +12,9 @@ describe('continuation design contracts', () => {
   it('does not waive failed-recovery and crash limitations', () => {
     expect(architecture.includes('never report failed recovery as success')).toBe(true);
   });
+  it('requires effective eligibility deltas and retains manual README evidence', () => {
+    expect(architecture.includes('include/exclude transitions are effective additions/removals')).toBe(true);
+    expect(architecture.includes('Count mixed manual/generated README evidence once')).toBe(true);
+    expect(architecture.includes('exclude generated-only README evidence')).toBe(true);
+  });
 });
