@@ -23,3 +23,7 @@ export function byteOffset(text: string, offset: number): number {
   }
   return Buffer.byteLength(text.slice(0, offset), 'utf8');
 }
+
+export function lineEnding(text: string): '\r\n' | '\n' {
+  return /\r?\n/.exec(text)?.[0] === '\r\n' ? '\r\n' : '\n';
+}

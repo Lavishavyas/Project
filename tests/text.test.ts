@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { byteOffset, decodeText } from '../src/text.js';
+import { byteOffset, decodeText, lineEnding } from '../src/text.js';
 
 describe('decodeText', () => {
   it('preserves UTF-8, BOM and line endings', () => {
@@ -24,5 +24,16 @@ describe('byteOffset', () => {
     for (const offset of [-1, 0.5, 1, 3, NaN]) {
       expect(() => byteOffset('\ud83d\ude00', offset)).toThrow('Invalid text boundary.');
     }
+  });
+});
+
+describe('lineEnding', () => {
+  it('uses the first existing newline without normalizing mixed text', () => {
+    expect(lineEnding('first\r\nsecond\n')).toBe('\r\n');
+    expect(lineEnding('first\nsecond\r\n')).toBe('\n');
+  });
+  it('falls back to LF when no newline evidence exists', () => {
+    expect(lineEnding('')).toBe('\n');
+    expect(lineEnding('manual')).toBe('\n');
   });
 });
