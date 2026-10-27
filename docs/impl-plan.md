@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-13 COMPLETE: Node manifest facts, approved setup and script/bin names have happy/missing/unsafe/malformed tests; no command or script body is executed or emitted.
+
 - T-12 COMPLETE: baseline..HEAD git diff plus effective snapshot changes tested, including ignore-only removal and rename endpoints. T-23 will supply marker-normalized snapshots to suppress generated-only README changes.
 
 - T-11 COMPLETE: committed/nested ignore inventory, stable paths and pre-read secret/generated-input exclusions tested, including forced-tracked ignored files and dirty-rule isolation. Scale warning is emitted by CLI reporting, not the pure scanner.
