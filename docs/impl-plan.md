@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-24 COMPLETE: generated-only zero-context previews, separate baseline transition and sanitized summaries tested, including old generated secrets, manual-context exclusion, absent evidence and no-change output.
+
 - T-23 COMPLETE: full candidate output plan combines semantic HEAD/baseline evidence, impacts, current destination preservation, changelog and state without writes; initial/no-op/fallback and generated-only normalization tests added.
 
 - T-22 COMPLETE: deterministic validated local SHA serialization tested with 40/64-character hashes and missing/invalid candidates; planning performs no persistence.
