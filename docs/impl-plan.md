@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-25 COMPLETE: safe destination snapshots, byte revalidation, private same-filesystem staging/backups and protected-sample refusal tested; candidate-write failure cleans staging and preserves originals.
+
 - T-24 COMPLETE: generated-only zero-context previews, separate baseline transition and sanitized summaries tested, including old generated secrets, manual-context exclusion, absent evidence and no-change output.
 
 - T-23 COMPLETE: full candidate output plan combines semantic HEAD/baseline evidence, impacts, current destination preservation, changelog and state without writes; initial/no-op/fallback and generated-only normalization tests added.
