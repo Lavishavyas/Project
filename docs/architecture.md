@@ -274,6 +274,12 @@ Existing manual README and changelog bytes are preserved even when sensitive; sa
 
 ## 11. Known Limitations
 
+### Continuation Decisions (2026-10-27)
+
+The user requested continued implementation without further questions. The following implementation choices resolve design sequencing, not unimplemented runtime gates or a relaxation of source requirements.
+
+- T-02: Compute and validate before writes; snapshot originals, stage same-filesystem candidates, revalidate originals, replace README/changelog, and install baseline last. Roll back handled failures in reverse order. Refuse write-mode access to this workspace's samples/ tree. Fault tests must verify recoverable failure preservation. Power loss, external concurrent mutation and rollback failure cannot be certified as unconditional FR-22 compliance; keep those limitations explicit and never report failed recovery as success.
+
 These deferrals belong to this timeboxed architecture only; docs/requirements.md remains unchanged. No requirement ID is renumbered, removed, or represented as implemented by this document.
 
 | Requirement IDs | Deferred or limited portion | Still in scope |

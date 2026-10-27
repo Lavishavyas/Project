@@ -6,6 +6,8 @@ Local repository paths only, detecting Node/TypeScript and Python stacks. No Git
 
 This replaces the previous detailed task breakdown. Task results are recorded below. Architecture/design-review owner-approval ambiguities remain unresolved; implementation does not approve their proposed policies.
 
+Continuation update (2026-10-27): the user authorized proceeding without further questions. The task table and earlier evidence retain the original scheduling snapshot; the Execution Ledger below is authoritative for subsequent status. Architecture continuation decisions record implementation choices. Unverified runtime/platform gates and unconditional failure-preservation limits are not counted as passed.
+
 ## Execution Rules
 
 - Tasks below are in dependency order. Among available tasks, prefer P0 (prerequisite/safety), then P1 (functional/acceptance), then P2 (performance). P2 remains mandatory.
@@ -105,3 +107,7 @@ All other scoped requirements remain mandatory, including the complete performan
 - T-01, T-07 and T-08 are complete; no remaining task is READY. T-02 through T-06 require explicit owner approval of failure/concurrency, encoding/byte boundaries, marker/newline, safe preview and counting contracts.
 - T-09 remains BLOCKED on T-03 even though T-08 is complete. All downstream repository/extraction/write/verification tasks retain their listed unmet dependencies. No design decision was inferred and no blocked work was skipped.
 - Requirements and samples/ remain unchanged. No remote URL input, cloning, branch option, retry behavior, Maven adapter or Go adapter was implemented. The scanner/sync CLI still requires the blocked tasks.
+
+## Execution Ledger
+
+- T-02 COMPLETE (design sequencing): documented staged writes, original snapshots, baseline-last and handled-failure rollback. The existing 100-test suite is the closeout gate; transaction behavior awaits T-25/T-26. FR-22 under crash/concurrency/rollback failure remains an explicit assurance gap, not an accepted waived requirement.
