@@ -4,7 +4,7 @@
 
 Local repository paths only, detecting Node/TypeScript and Python stacks. No GitHub URL cloning, --branch, --out, network retries, or Java/Maven/Go stack adapters. Other local requirements in docs/requirements.md and docs/architecture.md remain in scope. Never modify samples/; use a disposable copy for write-mode verification.
 
-This replaces the previous detailed task breakdown. No task is complete. Architecture/design-review ambiguities remain unresolved; writing this plan does not approve their proposed policies.
+This replaces the previous detailed task breakdown. Task results are recorded below. Architecture/design-review owner-approval ambiguities remain unresolved; implementation does not approve their proposed policies.
 
 ## Execution Rules
 
@@ -21,13 +21,13 @@ Each description includes the task's focused acceptance check. Requirements cove
 
 | Task ID | Description and Focused Check | Priority | Depends On | Requirements Covered | Status |
 | --- | --- | --- | --- | --- | --- |
-| T-01 | Establish Node-20-compatible locked dependencies, strict TypeScript/ESM, build/typecheck and Vitest with four 80% thresholds. Add a minimal validated local-request schema and nonempty happy/invalid-input tests; record D-2 compatibility choices without claiming the full matrix passed. | P0 | None | FR-2; NFR-3, NFR-4, NFR-7 | READY |
+| T-01 | Establish Node-20-compatible locked dependencies, strict TypeScript/ESM, build/typecheck and Vitest with four 80% thresholds. Add a minimal validated local-request schema and nonempty happy/invalid-input tests; record D-2 compatibility choices without claiming the full matrix passed. | P0 | None | FR-2; NFR-3, NFR-4, NFR-7 | COMPLETE |
 | T-02 | Resolve D-1's failure/concurrency contract, commit point and recovery obligations in architecture. Specify fault outcomes; obtain owner approval without weakening FR-22 implicitly. | P0 | T-01; owner approval | FR-5, FR-12, FR-14, FR-22; NFR-6 | BLOCKED |
 | T-03 | Resolve D-3's encoding and parser-offset-to-byte-buffer contract, including malformed/binary evidence handling. Define Unicode, emoji, BOM and invalid-encoding preservation/failure fixtures. | P0 | T-01; owner approval | FR-2, FR-7, FR-12, FR-15, FR-21; NFR-6 | BLOCKED |
 | T-04 | Resolve D-5's marker recognition, committed-versus-destination validation, and mixed-ending append policies. Define fenced/inline-code, malformed-pair and no-final-newline outcomes. | P0 | T-01; owner approval | FR-11, FR-12, FR-15, FR-21; NFR-5, NFR-6 | BLOCKED |
 | T-05 | Confirm the secret-safe unified-preview contract: generated-only projections, no manual context, sanitized old/new text and explicit hunk coordinates. Define sentinel non-disclosure assertions. | P0 | T-01; owner approval | FR-20, FR-25; NFR-6 | BLOCKED |
 | T-06 | Specify D-4's effective eligibility deltas and mixed README counting in architecture. Define ignore-only inclusion/exclusion and generated-only/manual README outcomes; seek approval for unresolved counting policy. | P0 | T-01; owner approval of counting policy | FR-5, FR-7, FR-13; NFR-2, NFR-5, NFR-6 | BLOCKED |
-| T-07 | Implement the single sanitizer and categorized safe diagnostics. Test every FR-25 secret pattern, unsafe/missing evidence, filenames and errors; never emit raw exceptions or real secrets. | P0 | T-01 | FR-2, FR-10, FR-17, FR-18, FR-20, FR-21, FR-24, FR-25; NFR-5, NFR-6 | BLOCKED |
+| T-07 | Implement the single sanitizer and categorized safe diagnostics. Test every FR-25 secret pattern, unsafe/missing evidence, filenames and errors; never emit raw exceptions or real secrets. | P0 | T-01 | FR-2, FR-10, FR-17, FR-18, FR-20, FR-21, FR-24, FR-25; NFR-5, NFR-6 | READY |
 | T-08 | Parse and validate local path/--dry-run arguments. Test missing/invalid input and constant-message rejection of URLs, --branch and --out without credential echo. | P0 | T-01, T-07 | FR-1, FR-2, FR-4, FR-20, FR-21, FR-25; NFR-7 | BLOCKED |
 | T-09 | Resolve a safe repository root, pin HEAD and read committed paths/modes/blobs using git argument arrays. Test spaces, empty/non-git paths, dirty-source isolation, symlinks/junctions and unsafe output ancestors. | P0 | T-03, T-08 | FR-5, FR-15, FR-21, FR-24; NFR-3, NFR-7 | BLOCKED |
 | T-10 | Validate local .docsync.json and classify initial, incremental and unavailable-baseline runs. Test missing/malformed state, wrong object types, absent commits and warning/full-scan fallback without fetch. | P1 | T-09 | FR-2, FR-14, FR-15, FR-16, FR-21 | BLOCKED |
@@ -72,4 +72,15 @@ Each description includes the task's focused acceptance check. Requirements cove
 | FR-23, NFR-6 | Network retries, backoff/rate-limit behavior and associated tests. | Local explicit failures, secret-safe errors and preservation tests. FR-23 has no implementation task in this timebox. |
 | FR-6, FR-7, FR-8, FR-9, FR-13, NFR-6 | Java/Maven/Go adapters, manifest-specific fields/setup/impacts and adapter tests. | Node/Python multi-stack extraction; generic Java/Go paths and literal environment references remain supported evidence. |
 
-All other scoped requirements remain mandatory, including the complete performance fixture, all eight literal environment-reference forms, four coverage thresholds and compatibility matrix. No code, tests, dependency changes or runtime verification were performed by writing this plan.
+All other scoped requirements remain mandatory, including the complete performance fixture, all eight literal environment-reference forms, four coverage thresholds and compatibility matrix. The task evidence below describes only checks actually performed; no deferred feature or unavailable platform is counted as complete.
+
+## Task Evidence
+
+### T-01 - Complete, 2026-10-27
+
+- Clean worktree on feature/doc-sync before edits; samples/ and requirements remained unchanged.
+- Pinned compatible/patched dependencies and parsers, strict ESM build/typecheck configuration, four coverage gates, and a zod local-request validator with 12 tests. Exact versions are recorded in architecture.
+- `npm install --ignore-scripts`: exit 0; final audit reported zero vulnerabilities after replacing vulnerable initial candidates. No forced audit fix or lifecycle scripts used.
+- `npm run typecheck`, `npm run build`, `npx vitest run`, and `npx vitest run --coverage`: exit 0; 12 tests passed; statements, branches, functions and lines all 100% on the initial validator.
+- `npx --yes --package=node@20 -- node node_modules/vitest/vitest.mjs run`: exit 0; 12 tests passed. This is a local Node-20 smoke run, not the full nine-cell compatibility matrix.
+- T-07 is now ready. T-02 through T-06 still require the explicit owner decisions listed above; no approval was inferred.

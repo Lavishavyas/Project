@@ -21,6 +21,8 @@ Review docs/architecture.md against docs/requirements.md for local repository pa
 
 ### D-2 - High: Installed dependency baseline does not support Node 20
 
+**T-01 remediation (2026-10-27):** The evidence below describes the review-time baseline. Commander is now pinned to 13.1.0, Vitest/coverage to 4.1.12 and Vite to 6.4.5, with compatible type definitions and an ESM build. Initial vulnerable Vitest/TOML/diff candidates were replaced with patched releases. Strict typecheck, build, 12 tests, all four coverage gates and a temporary Node-20 test run pass; installation audit reports zero vulnerabilities. The architecture now records exact versions and the compatibility gate. D-2's design/toolchain omission is addressed; the full required OS/Node matrix remains pending and is not claimed complete.
+
 - **Evidence:** The technology table targets Node 20+ at [architecture.md](architecture.md#L12), but does not identify compatible package versions. Inspection of [../node_modules/commander/package.json](../node_modules/commander/package.json) found commander 15.0.0 requiring Node `>=22.12.0`; [../node_modules/vitest/package.json](../node_modules/vitest/package.json) declares Vitest 5.0.5 requiring `^22.12.0 || ^24.0.0 || >=26.0.0`. [../package.json](../package.json) currently declares CommonJS, whereas the required implementation uses ESM.
 - **Classification:** Observed engine declarations and module configuration, not an executed Node-20 failure. ESM migration is ordinary implementation work, not proof that the proposed ESM design is wrong. The incompatible engine declarations are the current feasibility blocker.
 - **Affected requirements/components:** NFR-3, NFR-4, NFR-6, NFR-7; C01, C12 and shared runtime/toolchain.
@@ -71,17 +73,17 @@ These decisions are supported by the requirements or the user's explicit timebox
 ### Proposals and Remaining Approval Questions
 
 - D-1's failure/concurrency contract requires explicit approval; FR-22 has not been relaxed.
-- D-2's exact compatible package versions and the proposed additional parser dependencies need selection and verification, not installation by the reviewer.
+- D-2's exact compatible package versions and proposed parser dependencies were selected and locked by the implementation agent in T-01, not installed by the reviewer. Full OS/Node runtime verification remains pending.
 - D-3's encoding policy and D-5's marker/append policies need an approved contract before dependent implementation tasks are considered ready.
 - Generated-only, zero-context preview projections are a reasonable proposal for reconciling FR-20 with FR-25. Projection-relative hunk coordinates are not yet an explicit user decision; do not describe previews as apply-ready full-file patches.
 - The local `lastSyncedSha` field and proposed changelog layout are architecture choices; retain them as design choices rather than attributing their exact syntax to the user.
 
 ## Architecture Remediation Checklist
 
-All remediation is **pending default-agent handoff**. This reviewer has not edited architecture, requirements, source, tests, configuration or lockfiles.
+The original review was read-only outside this document. The implementation agent subsequently completed T-01's D-2 toolchain/design remediation; all other architecture remediation and owner approvals remain pending.
 
 - [ ] D-1: Mark FR-22 acceptance blocked; document exact recoverable-failure/commit/cleanup behavior and obtain an explicit decision on unresolved conditions. Acceptance: the stated contract matches requirements, and fault cases have pass/fail criteria without waived failures.
-- [ ] D-2: Add a Node-20-compatible dependency/version and ESM migration gate to the architecture. Acceptance: no component assumes current incompatible versions pass the compatibility matrix; actual package verification is assigned to implementation.
+- [x] D-2 design/toolchain gate: Record the compatible pinned versions and ESM baseline in architecture after T-01 checks. The full compatibility matrix remains an outstanding runtime gate.
 - [ ] D-3: Specify parser-offset to byte-buffer mapping and unsupported-encoding policy. Acceptance: Unicode/BOM/newline and invalid-encoding preservation tests are described concretely.
 - [ ] D-4: Specify effective eligibility-delta invalidation. Acceptance: ignore-only committed changes update impacted sections and counts without consulting dirty rules.
 - [ ] D-5: Separate proposed marker/newline/committed-versus-destination policies from confirmed requirements. Acceptance: ambiguous cases have approved expected outcomes, or their implementation tasks remain blocked.

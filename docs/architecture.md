@@ -21,6 +21,12 @@ These are design choices, not installed dependencies or claims of implementation
 | Node.js fs/path/crypto and monotonic performance clock | Standard primitives support containment checks, byte snapshots, staged writes, hashes, and reproducible timing. | FR-5, FR-22, NFR-1, NFR-3 |
 | Vitest and its coverage tooling | Required tests and four independent 80% coverage thresholds, with injected filesystem faults and UTC clocks. | NFR-4, NFR-6, NFR-7 |
 
+### T-01 Toolchain Baseline
+
+The implementation pins commander 13.1.0, Vitest/@vitest/coverage-v8 4.1.12, Vite 6.4.5, TypeScript 7.0.2, @types/node 20.19.9 and tsx 4.23.15. Vite is pinned explicitly because Vitest permits newer majors with different runtime requirements. Runtime dependencies are simple-git 4.0.2, zod 4.6.7, smol-toml 1.9.1, unified 11.0.5, remark-parse 11.0.0, remark-gfm 4.0.1, ignore 7.0.5 and diff 8.0.4. Versions are locked; the patched Vitest/TOML/diff selections replace vulnerable initial candidates without raising the Node 20 minimum (NFR-3, NFR-7).
+
+The project is ESM with an ES2022 target and strict TypeScript, a source-only build, separate typechecking, and four independent 80% coverage thresholds. T-01 establishes only a validated local request boundary and tests, not a runnable sync CLI. Build, typecheck, 12 tests and coverage pass locally; the tests also pass via a temporary Node-20 runtime command. The full Windows/macOS/Linux by Node-20/22/24 matrix remains required and unverified. Missing encoding, marker, preview, counting and failure-model approvals are unchanged.
+
 No repository dependencies, scripts, setup commands, or extracted usage commands are executed. Environment references use bounded literal token recognition, not runtime evaluation; `.env.example` uses the explicitly limited assignment grammar, not dotenv evaluation.
 
 ## 3. Component Diagram
