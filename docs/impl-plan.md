@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-20 COMPLETE: pure unioned manifest/README/source/structure impact mapping tested, including full scans, missing sections and no-change cases.
+
 - T-19 COMPLETE: seven-section generation and pure impacted/missing-only README merging tested for Not Found, manual Unicode/BOM/newline bytes, unaffected sections, malformed markers and marker-like evidence escaping.
 
 - T-18 COMPLETE: AST-recognized marker pairs, UTF-8 byte ranges and manual-only projection tested with Unicode/BOM, code examples and malformed/duplicate/crossed/unknown ownership.
