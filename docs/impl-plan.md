@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-05 COMPLETE (design contract): zero-context sanitized projections and no-write/no-manual-context requirements recorded and checked by policy tests. Runtime output assertions remain T-24 work.
+
 - T-04 COMPLETE (policy/newline helper): standalone non-code marker ownership and independent HEAD/destination validation are specified; first-newline selection has existing/missing-evidence tests. Pair parsing follows in T-18.
 
 - T-03 COMPLETE: strict UTF-8/BOM decoding and explicit byte-offset mapping have happy/failure tests, including malformed bytes and surrogate boundaries. Full-suite gate required before commit.
