@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-11 COMPLETE: committed/nested ignore inventory, stable paths and pre-read secret/generated-input exclusions tested, including forced-tracked ignored files and dirty-rule isolation. Scale warning is emitted by CLI reporting, not the pure scanner.
+
 - T-10 COMPLETE: local state schema and initial/incremental/unavailable-history classification tested; malformed state fails safely and missing commits never trigger network operations.
 
 - T-09 COMPLETE: safe local root/HEAD discovery, byte-preserving committed blob reads and dirty-state detection; temporary-repository tests cover missing/empty paths, links, invalid objects and dirty isolation. Full-suite gate required before commit.
