@@ -13,9 +13,10 @@ export interface ReadmeEvidence { name: string; purpose: string; usage: string }
 export interface Evidence { name: string; purpose: string; stacks: string[]; setup: string[]; usage: string[]; structure: string[] }
 
 export function extractReadmeEvidence(manual: string): ReadmeEvidence {
+  manual = manual.replace(/^\ufeff/, '');
   const nodes = markdown.parse(manual).children;
   const heading = nodes.find((node) => node.type === 'heading' && node.depth === 1);
-  const paragraph = nodes.find((node) => node.type === 'paragraph' && toString(node).trim() !== '' && !/^\s*\[!\[/.test(manual.slice(node.position!.start.offset, node.position!.end.offset)));
+  const paragraph = nodes.find((node) => node.type === 'paragraph' && toString(node, { includeImageAlt: false }).trim() !== '' && !/^\s*\[!\[/.test(manual.slice(node.position!.start.offset, node.position!.end.offset)));
   const usageIndex = nodes.findIndex((node) => node.type === 'heading' && /^#{1,6}\s/.test(manual.slice(node.position!.start.offset)) && toString(node).toLowerCase() === 'usage');
   let usage = '';
   if (usageIndex >= 0) {
@@ -26,7 +27,7 @@ export function extractReadmeEvidence(manual: string): ReadmeEvidence {
   }
   return {
     name: sanitizeEvidence(heading ? toString(heading) : undefined),
-    purpose: sanitizeEvidence(paragraph ? toString(paragraph).replace(/\r?\n/g, ' ') : undefined),
+    purpose: sanitizeEvidence(paragraph ? toString(paragraph, { includeImageAlt: false }).replace(/\r?\n/g, ' ') : undefined),
     usage: sanitizeEvidence(usage),
   };
 }

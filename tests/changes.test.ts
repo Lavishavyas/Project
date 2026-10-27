@@ -26,3 +26,16 @@ it('runs the committed diff and accounts for ignore-only commits', async () => {
   expect(changes).toContainEqual({ path: 'keep.txt', kind: 'deleted' });
   await expect(readChanges(repo, 'f'.repeat(40), before, new Map())).rejects.toThrow('Cannot compare baseline commits.');
 });
+
+it('retains git-reported example changes after discarding example values', async () => {
+  const root = await createFixture({ '.env.example': 'NAME=first-synthetic' });
+  const initial = await openRepository(root);
+  const before = await scanRepository(initial);
+  await writeFile(join(root, '.env.example'), 'NAME=second-synthetic');
+  await simpleGit(root).add('.env.example').commit('example change');
+  const repo = await openRepository(root);
+  const after = await scanRepository(repo);
+  expect(before.get('.env.example')).toBe('NAME=');
+  expect(after.get('.env.example')).toBe('NAME=');
+  expect(await readChanges(repo, initial.head, before, after)).toEqual([{ path: '.env.example', kind: 'modified' }]);
+});

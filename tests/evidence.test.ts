@@ -9,6 +9,12 @@ describe('extractReadmeEvidence', () => {
   it('reports absent evidence as Not Found', () => {
     expect(extractReadmeEvidence('')).toEqual({ name: 'Not Found', purpose: 'Not Found', usage: 'Not Found' });
   });
+  it('skips image-only paragraphs and preserves BOM-relative usage boundaries', () => {
+    const facts = extractReadmeEvidence('\ufeff# Name\n\n![badge](https://example.invalid/badge)\n\nActual purpose\n\n## Usage\nrun correctly\n\n## Next\nother');
+    expect(facts.purpose).toBe('Actual purpose');
+    expect(facts.usage).toBe('run correctly');
+    expect(extractReadmeEvidence('![badge](image.png)').purpose).toBe('Not Found');
+  });
 });
 
 describe('extractEvidence', () => {

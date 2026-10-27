@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-29 COMPLETE: all four coverage gates pass without exclusions/threshold reductions; added image-only/BOM Markdown and normalized-example git-diff regressions. Final measured metrics are recorded in verification evidence.
+
 - T-28 COMPLETE: actual Node/tsx entry-point dry-run, dirty-source isolation, malformed-destination preservation, cleanup rollback and explicit recovery-failure regressions added. No original sample was used as a mutable test target.
 
 - T-27 COMPLETE: executable tsx CLI wires validate/pin/scan/plan/preview-or-write/report with fixed fatal diagnostics. End-to-end tests exercise dry-run non-modification, real writes, generated-only no-op, committed incremental environment updates and malformed-input preservation. Filesystem integration tests have a 20-second test timeout, separate from the NFR performance measurement.
