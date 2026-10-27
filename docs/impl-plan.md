@@ -110,6 +110,8 @@ All other scoped requirements remain mandatory, including the complete performan
 
 ## Execution Ledger
 
+- T-10 COMPLETE: local state schema and initial/incremental/unavailable-history classification tested; malformed state fails safely and missing commits never trigger network operations.
+
 - T-09 COMPLETE: safe local root/HEAD discovery, byte-preserving committed blob reads and dirty-state detection; temporary-repository tests cover missing/empty paths, links, invalid objects and dirty isolation. Full-suite gate required before commit.
 
 - T-06 COMPLETE (design contract): committed-rule eligibility transitions and mixed/generated-only README counting are specified with contract checks; behavioral inventory tests follow in T-11/T-12.
